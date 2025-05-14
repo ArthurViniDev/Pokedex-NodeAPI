@@ -35,6 +35,20 @@ app.get("/lista", (req, res) => {
   });
 });
 
+app.get("/:name", (req, res) => {
+  let nameToFind = req.params.name;
+  if(pokemons.some(pokemon => pokemon.toLowerCase() === nameToFind.toLowerCase())) {
+    res.json({
+      name: nameToFind
+    })
+  }
+  else{
+    res.status(404).json({
+      message: "Pokemon not Found"
+    })
+  }
+})
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
