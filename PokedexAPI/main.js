@@ -21,6 +21,21 @@ app.get("/lista", async (req, res) => {
   res.json({ offset, limit, results });
 });
 
+app.get("/pokemons/:name", async (req, res) => {
+  const nameToCheck = await req.params.name;
+  const existingPokemon = await prisma.pokemon.findFirst({
+    where: {
+      name: {
+        equals: nameToCheck,
+      },
+    },
+  })
+
+  if (!existingPokemon) {
+    return res.status(404).json({ error: "Pokemon does not exist" });
+  }
+  return res.status(200).json({ pokemon: existingPokemon });
+})
 
 app.post("/create", async (req, res) => {
   const { name } = req.body;
@@ -31,7 +46,7 @@ app.post("/create", async (req, res) => {
   }
   try {
     const created = await prisma.pokemon.create({
-      data: { name }
+      data: { name : name.toLowerCase() },
     });
     res.status(201).json(created);
   } catch (error) {
