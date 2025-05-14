@@ -1,4 +1,7 @@
 const express = require("express");
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
 const app = express();
 const PORT = 3000;
 
@@ -21,52 +24,33 @@ app.use(express.json());
 
 const MAX_PAGINATION_LIMIT = 5;
 
-app.get("/lista", (req, res) => {
+app.get("/lista", async (req, res) => {
   let offset = parseInt(req.query.offset) || 0;
-  let limit = parseInt(req.query.limit) || MAX_PAGINATION_LIMIT;
-  if (limit > MAX_PAGINATION_LIMIT) {
-    limit = MAX_PAGINATION_LIMIT;
-  }
+  let limit = parseInt(req.query.limit) || 5;
 
-  let paginatedList = pokemons.slice(offset, offset + limit);
-
-  res.json({
-    offset,
-    limit,
-    results: paginatedList,
+  const results = await prisma.pokemon.findMany({
+    skip: offset,
+    take: limit,
   });
+
+  res.json({ offset, limit, results });
 });
 
-app.get("/pokemon/:name", (req, res) => {
-  let nameToFind = req.params.name;
-  if(pokemons.some(pokemon => pokemon.toLowerCase() === nameToFind.toLowerCase())) {
-    res.json({
-      name: nameToFind
-    })
-  }
-  else{
-    res.status(404).json({
-      message: "Pokemon not Found"
-    })
-  }
-})
 
-app.post("/create", (req, res) => {
-  const data = req.body;
-  const name = req.body?.name.toString();
-  if(name) {
-    const alreadyExists = pokemons.some(p => p.toLowerCase() === name.toLowerCase());
-    if (alreadyExists) {
-      return res.status(409).json({ message: "Pokemon already exists" });
-    }
-    pokemons.push(name);
-    res.status(201).json({
-      message: `Pokemon ${name} created!`
+app.post("/create", async (req, res) => {
+  const { name } = req.body;
+  if(!name){
+    return res.status(400).json({
+      message: "Pokemon name cannot be empty"
     })
-  }else{
-    res.status(400).json({
-      message: "Missing pokemon name"
-    })
+  }
+  try {
+    const created = await prisma.pokemon.create({
+      data: { name }
+    });
+    res.status(201).json(created);
+  } catch (error) {
+    res.status(409).json({ message: "Pokemon already exists" });
   }
 })
 
