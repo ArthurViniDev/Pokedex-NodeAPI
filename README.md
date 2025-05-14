@@ -13,8 +13,10 @@ O projeto simula uma Pokédex, permitindo cadastrar, listar e consultar pokémon
 
 🧰 Tecnologias usadas
 Node.js, Express, Prisma ORM, SQLite
-
-Método	  Rota	              Descrição
-GET	      /list	Lista         pokémons com paginação
-GET	      /pokemons/:name	    Retorna um pokémon pelo nome
-POST	    /create	            Cria um novo pokémon
+```
+| Método | Rota            | Descrição                    |
+| ------ | --------------- | ---------------------------- |
+| GET    | /list           | Lista pokémons com paginação |
+| GET    | /pokemons/:name | Retorna um pokémon pelo nome |
+| POST   | /create         | Cria um novo pokémon         |
+```
