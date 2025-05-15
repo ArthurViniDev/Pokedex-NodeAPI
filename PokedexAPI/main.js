@@ -21,8 +21,7 @@ app.get("/list", async (req, res) => {
   });
 
   res.json({ offset, limit, results });
-});
-
+}); 
 app.get("/pokemons/:name", async (req, res) => {
   const nameToCheck = req.params.name.toLowerCase();
   const existingPokemon = await prisma.pokemon.findFirst({
@@ -36,6 +35,7 @@ app.get("/pokemons/:name", async (req, res) => {
   if (!existingPokemon) {
     return res.status(404).json({ error: "Pokemon does not exist" });
   }
+
   return res.status(200).json({ pokemon: existingPokemon });
 });
 
@@ -48,14 +48,14 @@ app.post("/create", async (req, res) => {
   }
   try {
     const created = await prisma.pokemon.create({
-      data: { name: name.toLowerCase() },
-    });
-    res.status(201).json(created);
+    data: { name: name.toLowerCase() },
+  });
+  res.status(201).json(created);
   } catch (error) {
     res.status(409).json({ message: "Pokemon already exists" });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
