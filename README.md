@@ -11,7 +11,7 @@ O projeto simula uma Pokédex, permitindo cadastrar, listar e consultar pokémon
 
 => Validação de dados e tratamento de erros HTTP (404, 400, 409)
 
-=> Tecnologias usadas
+=> Tecnologias usadas:
 Node.js, Express, Prisma ORM, SQLite
 ```
 | Método | Rota            | Descrição                    |
